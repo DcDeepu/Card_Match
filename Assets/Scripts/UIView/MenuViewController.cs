@@ -11,6 +11,7 @@ namespace com.mystery_mist.uiview
     {
         [SerializeField] private Button m_Grid2x2Button;
         [SerializeField] private Button m_Grid2x3Button;
+        [SerializeField] private Button m_Grid4x4Button;
         [SerializeField] private Button m_Grid5x6Button;
 
         private void Start()
@@ -18,6 +19,7 @@ namespace com.mystery_mist.uiview
             // Set up button listeners
             m_Grid2x2Button.onClick.AddListener(() => OnGridSizeSelected(2, 2));
             m_Grid2x3Button.onClick.AddListener(() => OnGridSizeSelected(2, 3));
+            m_Grid4x4Button.onClick.AddListener(() => OnGridSizeSelected(4, 4));
             m_Grid5x6Button.onClick.AddListener(() => OnGridSizeSelected(5, 6));
         }
 
