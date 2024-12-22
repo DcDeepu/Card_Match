@@ -57,7 +57,7 @@ namespace com.mystery_mist.uiview
         }
         private void LoadGame()
         {
-            string json = PlayerPrefs.GetString(UIConstants.k_SaveGame);
+            string json = PlayerPrefs.GetString(Constants.k_SaveGame);
             SavedGameData saveData = JsonUtility.FromJson<SavedGameData>(json);
 
             m_CurrentRows = saveData.Rows;
@@ -88,7 +88,7 @@ namespace com.mystery_mist.uiview
 
         private bool IsSavedGameAvailable()
         {
-            return PlayerPrefs.HasKey(UIConstants.k_SaveGame);
+            return PlayerPrefs.HasKey(Constants.k_SaveGame);
         }
         private void SaveGame()
         {
@@ -108,7 +108,7 @@ namespace com.mystery_mist.uiview
 
             string json = JsonUtility.ToJson(saveData);
             Debug.Log(json);
-            PlayerPrefs.SetString(UIConstants.k_SaveGame, json);
+            PlayerPrefs.SetString(Constants.k_SaveGame, json);
             PlayerPrefs.Save();
 
             Debug.Log("Game saved successfully!");
@@ -256,6 +256,8 @@ namespace com.mystery_mist.uiview
                     UpdateScore(m_Score); // Update score UI
                 }
                 m_FlippedCards.Clear();
+                AudioManager.s_Instance.PlaySoundEffect(Constants.k_Matched);
+
                 // Check if all cards are matched
                 if (AreAllPairsMatched())
                 {
@@ -263,7 +265,7 @@ namespace com.mystery_mist.uiview
                     GameEndViewController saveView = UIManager.s_Instance.GetViewController<GameEndViewController>();
                     saveView.Initialize(OnSaveDecision);
 
-                    UIManager.s_Instance.OpenViewController(UIConstants.k_GameEndViewController);
+                    UIManager.s_Instance.OpenViewController(Constants.k_GameEndViewController);
                 }
             }
             else
@@ -297,6 +299,8 @@ namespace com.mystery_mist.uiview
 
         public void RestartGame()
         {
+            AudioManager.s_Instance.PlaySoundEffect(Constants.k_ClickButton);
+
             m_Score = 0; // Reset score
             UpdateScore(m_Score);
 
@@ -310,12 +314,13 @@ namespace com.mystery_mist.uiview
         private void GoToMenu()
         {
             Debug.Log("Opening SaveViewController...");
+            AudioManager.s_Instance.PlaySoundEffect(Constants.k_ClickButton);
 
             // Open SaveViewController
             SaveViewController saveView = UIManager.s_Instance.GetViewController<SaveViewController>();
             saveView.Initialize(OnSaveDecision);
 
-            UIManager.s_Instance.OpenViewController(UIConstants.k_SaveViewController);
+            UIManager.s_Instance.OpenViewController(Constants.k_SaveViewController);
         }
 
         private void OnSaveDecision(bool save)
@@ -343,16 +348,16 @@ namespace com.mystery_mist.uiview
             UpdateScore(m_Score);
 
             Debug.Log("Returning to the main menu...");
-            UIManager.s_Instance.CloseViewController(UIConstants.k_GameViewController);
-            UIManager.s_Instance.OpenViewController(UIConstants.k_MenuViewController);
+            UIManager.s_Instance.CloseViewController(Constants.k_GameViewController);
+            UIManager.s_Instance.OpenViewController(Constants.k_MenuViewController);
         }
 
 
         private void ClearSaveGameData()
         {
-            if (PlayerPrefs.HasKey(UIConstants.k_SaveGame))
+            if (PlayerPrefs.HasKey(Constants.k_SaveGame))
             {
-                PlayerPrefs.DeleteKey(UIConstants.k_SaveGame);
+                PlayerPrefs.DeleteKey(Constants.k_SaveGame);
                 PlayerPrefs.Save();
                 Debug.Log("Save game data cleared successfully.");
             }

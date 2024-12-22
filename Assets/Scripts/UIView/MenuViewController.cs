@@ -23,6 +23,7 @@ namespace com.mystery_mist.uiview
 
         private void OnGridSizeSelected(int rows, int columns)
         {
+            AudioManager.s_Instance.PlaySoundEffect(Constants.k_ClickButton);
             GameManager.s_Instance.ShowGameView(rows, columns);
         }
     }

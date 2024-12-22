@@ -11,6 +11,7 @@ namespace com.mystery_mist.core
         public ScenePrefabConfiguration m_ScenePrefabsConfig;
         // Managers
         private UIManager m_UIManager;
+        private AudioManager m_AudioManager;
         /// <summary>
         /// Awake is called when the script instance is being loaded.
         /// </summary>
@@ -47,6 +48,8 @@ namespace com.mystery_mist.core
         private void InitializeManagers()
         {
             m_UIManager = FindOrCreateManager<UIManager>();
+            m_AudioManager = FindOrCreateManager<AudioManager>();
+
         }
 
         private T FindOrCreateManager<T>() where T : MonoBehaviour
@@ -64,15 +67,16 @@ namespace com.mystery_mist.core
         private void RegisterManager(MonoBehaviour manager)
         {
             if (manager is UIManager uiManager) m_UIManager = uiManager;
+            else if (manager is AudioManager audioManager) m_AudioManager = audioManager;
         }
 
 
         public void ShowGameView(int rows, int columns)
         {
-            m_UIManager.CloseViewController(UIConstants.k_MenuViewController);
-            m_UIManager.OpenViewController(UIConstants.k_GameViewController);
+            m_UIManager.CloseViewController(Constants.k_MenuViewController);
+            m_UIManager.OpenViewController(Constants.k_GameViewController);
             // Notify the UIManager to open the GameViewController with grid size
-            m_UIManager.SendDataToViewController(UIConstants.k_GameViewController, new GridData(rows, columns));
+            m_UIManager.SendDataToViewController(Constants.k_GameViewController, new GridData(rows, columns));
         }
 
     }

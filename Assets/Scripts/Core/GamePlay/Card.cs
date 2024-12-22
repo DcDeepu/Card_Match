@@ -82,6 +82,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         // Swap the visible side
         OnCardTapped?.Invoke(this); // Notify listeners
+        AudioManager.s_Instance.PlaySoundEffect(Constants.k_CardFlip);
         IsFlipped = !IsFlipped;
         frontImage.SetActive(IsFlipped);
         backImage.SetActive(!IsFlipped);

@@ -27,6 +27,8 @@ namespace com.mystery_mist.uiview
         }
         private void GotoMenu()
         {
+            AudioManager.s_Instance.PlaySoundEffect(Constants.k_ClickButton);
+
             m_OnSaveDecision?.Invoke(false); // Notify the decision not to save
             Close(); // Close the SaveViewController
         }

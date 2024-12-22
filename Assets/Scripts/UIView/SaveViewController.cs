@@ -31,12 +31,16 @@ namespace com.mystery_mist.uiview
 
         private void SaveGame()
         {
+            AudioManager.s_Instance.PlaySoundEffect(Constants.k_ClickButton);
+
             m_OnSaveDecision?.Invoke(true); // Notify the decision to save
             Close(); // Close the SaveViewController
         }
 
         private void DontSaveGame()
         {
+            AudioManager.s_Instance.PlaySoundEffect(Constants.k_ClickButton);
+
             m_OnSaveDecision?.Invoke(false); // Notify the decision not to save
             Close(); // Close the SaveViewController
         }
