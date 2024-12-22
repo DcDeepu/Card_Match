@@ -9,11 +9,11 @@ namespace com.mystery_mist.core
         public static UIManager s_Instance { get; private set; }
 
         private Dictionary<string, ViewController> m_viewControllers = new Dictionary<string, ViewController>();
-        private GameObject mainCanvas;
+        private GameObject m_MainCanvas;
 
         // Field to hold the default view controller key
         [SerializeField]
-        private string defaultViewControllerKey = "MenuViewController"; // Example default view controller
+        private string m_DefaultViewControllerKey = "MenuViewController"; // Example default view controller
 
         private void Awake()
         {
@@ -30,9 +30,9 @@ namespace com.mystery_mist.core
 
         private void Initialize()
         {
-            mainCanvas = GameObject.Find("UICanvas");
+            m_MainCanvas = GameObject.Find("UICanvas");
 
-            if (mainCanvas != null)
+            if (m_MainCanvas != null)
             {
                 InitializeViewControllers();
                 OpenDefaultViewController();
@@ -46,7 +46,7 @@ namespace com.mystery_mist.core
         private void InitializeViewControllers()
         {
             // Get all ViewControllers in the mainCanvas
-            ViewController[] controllers = mainCanvas.GetComponentsInChildren<ViewController>(true);
+            ViewController[] controllers = m_MainCanvas.GetComponentsInChildren<ViewController>(true);
 
             foreach (var controller in controllers)
             {
@@ -65,9 +65,9 @@ namespace com.mystery_mist.core
 
         private void OpenDefaultViewController()
         {
-            if (!string.IsNullOrEmpty(defaultViewControllerKey))
+            if (!string.IsNullOrEmpty(m_DefaultViewControllerKey))
             {
-                OpenViewController(defaultViewControllerKey);
+                OpenViewController(m_DefaultViewControllerKey);
             }
             else
             {

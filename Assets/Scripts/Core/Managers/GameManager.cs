@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -87,5 +88,17 @@ namespace com.mystery_mist.core
             Columns = columns;
         }
     }
+
+    [Serializable]
+    public class CardData
+    {
+        public string Id; // Unique identifier
+        public string DataType; // Data type (e.g., "Color")
+        public Color Value; // The actual data (e.g., a Color)
+    }
+
+
+
+
 }
 
