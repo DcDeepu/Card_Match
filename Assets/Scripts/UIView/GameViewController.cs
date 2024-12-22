@@ -17,6 +17,8 @@ namespace com.mystery_mist.uiview
         private List<CardData> m_CardDataList = new List<CardData>();
 
         private bool m_IsGameLoaded = false; // Tracks if the game was loaded
+
+
         private List<Card> m_FlippedCards = new List<Card>();
 
         private int m_CurrentRows;
@@ -52,8 +54,37 @@ namespace com.mystery_mist.uiview
                 {
                     GenerateCardData(m_CurrentRows, m_CurrentColumns);
                     GenerateGrid(m_CurrentRows, m_CurrentColumns);
+                    StartCoroutine(PreGameReveal()); // Show cards before the game starts
                 }
             }
+        }
+
+        private IEnumerator PreGameReveal()
+        {
+            Debug.Log("Revealing all cards before game starts...");
+            // Flip all cards
+            foreach (Transform child in m_GridContainer)
+            {
+                Card card = child.GetComponent<Card>();
+                if (card != null)
+                {
+                    card.ResetCard();
+                }
+            }
+
+            yield return new WaitForSeconds(3f); // Delay to show the cards
+
+            // Flip all cards back
+            foreach (Transform child in m_GridContainer)
+            {
+                Card card = child.GetComponent<Card>();
+                if (card != null)
+                {
+                    card.ResetCard();
+                }
+            }
+
+            Debug.Log("Game starts now!");
         }
         private void LoadGame()
         {
@@ -232,7 +263,6 @@ namespace com.mystery_mist.uiview
                 Debug.Log("Card is already flipped and displayed.");
                 return;
             }
-
             m_FlippedCards.Add(card);
             Debug.Log($"Card added to flippedCards. Total flipped cards: {m_FlippedCards.Count}");
 
