@@ -43,9 +43,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         // OnCardTapped();
-        if (m_IsAnimating) return; // Prevent double-tapping during animation
-
-        if (IsFlipped) return;
+        // Prevent flipping if animating or flipping is not allowed
+        if (m_IsAnimating || !GameManager.s_Instance.AllowFlipping || IsFlipped) return;
 
         Flip();
 

@@ -12,6 +12,19 @@ namespace com.mystery_mist.core
         // Managers
         private UIManager m_UIManager;
         private AudioManager m_AudioManager;
+
+
+        private bool m_AllowFlipping = true;
+
+        public bool AllowFlipping
+        {
+            get => m_AllowFlipping;
+            set
+            {
+                m_AllowFlipping = value;
+                Debug.Log($"AllowFlipping set to: {m_AllowFlipping}");
+            }
+        }
         /// <summary>
         /// Awake is called when the script instance is being loaded.
         /// </summary>

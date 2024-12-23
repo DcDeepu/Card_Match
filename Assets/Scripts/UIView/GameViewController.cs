@@ -274,6 +274,7 @@ namespace com.mystery_mist.uiview
 
         private IEnumerator CheckMatch()
         {
+            GameManager.s_Instance.AllowFlipping = false; // Disable flipping
             yield return new WaitForSeconds(1f); // Wait to show both cards
 
             if (m_FlippedCards[0].CardData.Value.Equals(m_FlippedCards[1].CardData.Value))
@@ -308,6 +309,7 @@ namespace com.mystery_mist.uiview
                 m_FlippedCards.Clear();
             }
             m_IsGameLoaded = false;
+            GameManager.s_Instance.AllowFlipping = true; // Disable flipping
         }
 
         private bool AreAllPairsMatched()
