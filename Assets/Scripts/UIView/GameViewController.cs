@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using com.mystery_mist.core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,12 +19,13 @@ namespace com.mystery_mist.uiview
 
         private bool m_IsGameLoaded = false; // Tracks if the game was loaded
 
-
         private List<Card> m_FlippedCards = new List<Card>();
 
         private int m_CurrentRows;
         private int m_CurrentColumns;
         private int m_Score = 0; // Track the player's score
+        List<Card> m_flipedCard = new List<Card>();
+        Color m_UnmatchCardColor;
 
         private void OnEnable()
         {
@@ -37,6 +39,10 @@ namespace com.mystery_mist.uiview
             Card.OnCardTapped -= HandleCardTapped; // Unsubscribe to prevent memory leaks
             m_RestartButton.onClick.RemoveListener(RestartGame); // Detach listeners
             m_MenuButton.onClick.RemoveListener(GoToMenu);
+
+            foreach (Transform child in m_GridContainer)
+                Destroy(child.gameObject);
+            m_IsGameLoaded = false;
         }
 
         public override void ReceiveData(object data)
@@ -86,8 +92,10 @@ namespace com.mystery_mist.uiview
 
             Debug.Log("Game starts now!");
         }
+
         private void LoadGame()
         {
+            m_flipedCard = new List<Card>();
             string json = PlayerPrefs.GetString(GetSaveKey(m_CurrentRows, m_CurrentColumns));
             SavedGameData saveData = JsonUtility.FromJson<SavedGameData>(json);
 
@@ -105,14 +113,38 @@ namespace com.mystery_mist.uiview
 
             GenerateGrid(m_CurrentRows, m_CurrentColumns);
 
+            // Count occurrences of flipped cards by their values
+            var flippedCardCounts = saveData.Cards
+                .Where(savedCard => savedCard.IsFlipped)
+                .GroupBy(savedCard => savedCard.Value) // Group by value
+                .ToDictionary(group => group.Key, group => group.Count()); // Create a dictionary with counts
+
             foreach (Transform child in m_GridContainer)
             {
                 Card card = child.GetComponent<Card>();
                 if (card != null && saveData.Cards.Exists(savedCard => savedCard.IsFlipped && savedCard.Id == card.CardData.Id))
                 {
                     card.SimplyFlip();
+                    m_flipedCard.Add(card);
                 }
             }
+
+            Debug.Log($"Total flipped cards: {m_flipedCard.Count}");
+            foreach (var card in flippedCardCounts)
+            {
+                if (card.Value == 1)
+                {
+                    m_UnmatchCardColor = card.Key;
+                }
+            }
+            foreach (var item in m_flipedCard)
+            {
+                if (m_UnmatchCardColor == item.CardData.Value)
+                {
+                    m_FlippedCards.Add(item);
+                }
+            }
+
             m_IsGameLoaded = true;
             Debug.Log("Game loaded successfully!");
         }
@@ -142,9 +174,8 @@ namespace com.mystery_mist.uiview
             PlayerPrefs.SetString(GetSaveKey(m_CurrentRows, m_CurrentColumns), json);
             PlayerPrefs.Save();
 
-            Debug.Log("Game saved successfully!");
+            Debug.Log("Game saved successfully!" + json);
         }
-
 
         private void GenerateCardData(int rows, int columns)
         {
@@ -383,7 +414,6 @@ namespace com.mystery_mist.uiview
             UIManager.s_Instance.CloseViewController(Constants.k_GameViewController);
             UIManager.s_Instance.OpenViewController(Constants.k_MenuViewController);
         }
-
 
         private void ClearSaveGameData()
         {
