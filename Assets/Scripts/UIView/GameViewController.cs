@@ -46,7 +46,7 @@ namespace com.mystery_mist.uiview
                 m_CurrentRows = gridData.Rows;
                 m_CurrentColumns = gridData.Columns;
 
-                if (IsSavedGameAvailable())
+                if (IsSavedGameAvailable() && IsSavedGridSizeMatching(m_CurrentRows, m_CurrentColumns))
                 {
                     LoadGame();
                 }
@@ -410,6 +410,17 @@ namespace com.mystery_mist.uiview
             }
 
             return false;
+        }
+
+        private bool IsSavedGridSizeMatching(int rows, int columns)
+        {
+            string json = PlayerPrefs.GetString(Constants.k_SaveGame);
+            if (string.IsNullOrEmpty(json)) return false;
+
+            SavedGameData saveData = JsonUtility.FromJson<SavedGameData>(json);
+
+            // Compare the saved grid size with the current grid size
+            return saveData.Rows == rows && saveData.Columns == columns;
         }
 
     }
