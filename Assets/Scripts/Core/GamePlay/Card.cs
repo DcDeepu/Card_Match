@@ -49,9 +49,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Flip();
 
     }
-    public void ResetCard()
+    public void SimplyFlip()
     {
-        // Flip();
         StartCoroutine(FlipCardSilently());
     }
 
@@ -59,10 +58,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
     {
         if (m_CardAnimCoroutine != null)
             StopCoroutine(m_CardAnimCoroutine);
-        m_CardAnimCoroutine = StartCoroutine(FlipCard(true));
+        m_CardAnimCoroutine = StartCoroutine(FlipCard());
     }
 
-    private IEnumerator FlipCard(bool IsScored)
+    private IEnumerator FlipCard()
     {
         m_IsAnimating = true;
 
@@ -99,6 +98,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         m_IsAnimating = false;
     }
+
     private IEnumerator FlipCardSilently()
     {
         m_IsAnimating = true;

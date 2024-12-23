@@ -11,7 +11,7 @@ public class Constants
     public const string k_GameEndViewController = "GameEndViewController";
 
     //GamePlay
-    public const string k_SaveGame = "SavedGame";
+    // public const string k_SaveGame = "SavedGame";
 
     //Audio
     public const string k_CardFlip = "CardFlip";

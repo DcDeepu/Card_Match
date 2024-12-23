@@ -46,7 +46,7 @@ namespace com.mystery_mist.uiview
                 m_CurrentRows = gridData.Rows;
                 m_CurrentColumns = gridData.Columns;
 
-                if (IsSavedGameAvailable() && IsSavedGridSizeMatching(m_CurrentRows, m_CurrentColumns))
+                if (IsSavedGameAvailable(m_CurrentRows, m_CurrentColumns) && IsSavedGridSizeMatching(m_CurrentRows, m_CurrentColumns))
                 {
                     LoadGame();
                 }
@@ -68,7 +68,7 @@ namespace com.mystery_mist.uiview
                 Card card = child.GetComponent<Card>();
                 if (card != null)
                 {
-                    card.ResetCard();
+                    card.SimplyFlip();
                 }
             }
 
@@ -80,7 +80,7 @@ namespace com.mystery_mist.uiview
                 Card card = child.GetComponent<Card>();
                 if (card != null)
                 {
-                    card.ResetCard();
+                    card.SimplyFlip();
                 }
             }
 
@@ -88,7 +88,7 @@ namespace com.mystery_mist.uiview
         }
         private void LoadGame()
         {
-            string json = PlayerPrefs.GetString(Constants.k_SaveGame);
+            string json = PlayerPrefs.GetString(GetSaveKey(m_CurrentRows, m_CurrentColumns));
             SavedGameData saveData = JsonUtility.FromJson<SavedGameData>(json);
 
             m_CurrentRows = saveData.Rows;
@@ -110,16 +110,16 @@ namespace com.mystery_mist.uiview
                 Card card = child.GetComponent<Card>();
                 if (card != null && saveData.Cards.Exists(savedCard => savedCard.IsFlipped && savedCard.Id == card.CardData.Id))
                 {
-                    card.Flip();
+                    card.SimplyFlip();
                 }
             }
             m_IsGameLoaded = true;
             Debug.Log("Game loaded successfully!");
         }
 
-        private bool IsSavedGameAvailable()
+        private bool IsSavedGameAvailable(int rows, int columns)
         {
-            return PlayerPrefs.HasKey(Constants.k_SaveGame);
+            return PlayerPrefs.HasKey(GetSaveKey(rows, columns));
         }
         private void SaveGame()
         {
@@ -139,7 +139,7 @@ namespace com.mystery_mist.uiview
 
             string json = JsonUtility.ToJson(saveData);
             Debug.Log(json);
-            PlayerPrefs.SetString(Constants.k_SaveGame, json);
+            PlayerPrefs.SetString(GetSaveKey(m_CurrentRows, m_CurrentColumns), json);
             PlayerPrefs.Save();
 
             Debug.Log("Game saved successfully!");
@@ -304,7 +304,7 @@ namespace com.mystery_mist.uiview
                 Debug.Log("No Match!");
                 foreach (var card in m_FlippedCards)
                 {
-                    card.ResetCard();
+                    card.SimplyFlip();
                 }
                 m_FlippedCards.Clear();
             }
@@ -368,7 +368,7 @@ namespace com.mystery_mist.uiview
                     Card card = child.GetComponent<Card>();
                     if (card != null)
                     {
-                        card.ResetCard();
+                        card.SimplyFlip();
                     }
                 }
                 ClearSaveGameData();
@@ -387,9 +387,9 @@ namespace com.mystery_mist.uiview
 
         private void ClearSaveGameData()
         {
-            if (PlayerPrefs.HasKey(Constants.k_SaveGame))
+            if (PlayerPrefs.HasKey(GetSaveKey(m_CurrentRows, m_CurrentColumns)))
             {
-                PlayerPrefs.DeleteKey(Constants.k_SaveGame);
+                PlayerPrefs.DeleteKey(GetSaveKey(m_CurrentRows, m_CurrentColumns));
                 PlayerPrefs.Save();
                 Debug.Log("Save game data cleared successfully.");
             }
@@ -414,13 +414,18 @@ namespace com.mystery_mist.uiview
 
         private bool IsSavedGridSizeMatching(int rows, int columns)
         {
-            string json = PlayerPrefs.GetString(Constants.k_SaveGame);
+            string json = PlayerPrefs.GetString(GetSaveKey(rows, columns));
             if (string.IsNullOrEmpty(json)) return false;
 
             SavedGameData saveData = JsonUtility.FromJson<SavedGameData>(json);
 
             // Compare the saved grid size with the current grid size
             return saveData.Rows == rows && saveData.Columns == columns;
+        }
+
+        private string GetSaveKey(int rows, int columns)
+        {
+            return $"SaveGame_{rows}x{columns}";
         }
 
     }
